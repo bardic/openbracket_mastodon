@@ -38,9 +38,11 @@ services:
 
     volumes:
       - /path/to/appdata/config:/config
+      - ./nginx.conf:/etc/nginx/sites-available/mastodon/nginx.conf
+      - ./nginx.conf:/etc/nginx/sites-enabled/mastodon/nginx.conf
     ports:
-      - 3001:80
-      - 6001:443
+      - 80:80
+      - 443:443
     restart: unless-stopped
   redis:
     image: "redis:latest"
@@ -64,22 +66,10 @@ services:
       - openbracket.mail.env
     ports:
       - 25:25
-
-  nginx:
-    container_name: nginx
-    restart: unless-stopped
-    image: nginx
-    ports:
-      - 80:80
-      - 443:443
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-      - /etc/letsencrypt/live/openbracket.ca/:/etc/letsencrypt/live/openbracket.ca/
-
-  certbot:
-    image: certbot/certbot
-    container_name: certbot
-    volumes:
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
-    command: certonly --webroot -w /var/www/certbot --force-renewal --email bardic.knowledge@gmail.com -d openbracket.ca --agree-tos
+  #certbot:
+  #  image: certbot/certbot
+  #  container_name: certbot
+  #  volumes:
+  #    - ./certbot/conf:/etc/letsencrypt
+  #    - ./certbot/www:/var/www/certbot
+  #  command: certonly --webroot -w /var/www/certbot --force-renewal --email bardic.knowledge@gmail.com -d openbracket.ca --agree-tos
