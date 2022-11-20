@@ -1,0 +1,66 @@
+---
+version: "2.1"
+services:
+  mastodon:
+    image: lscr.io/linuxserver/mastodon:latest
+    container_name: mastodon
+    depends_on:
+      - "redis"
+      - "database"
+
+    env_file:
+      - openbracket.mastodon.env
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+
+      - DB_HOST=database
+      - DB_USER=mastodon
+      - DB_NAME=mastodon
+      - DB_PASS=mastodon
+      - DB_PORT=5432
+
+      - ES_ENABLED=false
+
+      - VAPID_PRIVATE_KEY=
+      - VAPID_PUBLIC_KEY=
+
+      - SMTP_SERVER=mail
+      - SMTP_PORT=25
+
+      - DISABLE_IPV6=1
+
+      - S3_ENABLED=false
+
+    volumes:
+      - /path/to/appdata/config:/config
+    ports:
+      - 80:80
+      - 443:443
+    restart: unless-stopped
+  redis:
+    image: "redis:latest"
+    ports:
+      - 6379:6379
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+
+  database:
+    image: 'postgres:latest'
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: mastodon
+      POSTGRES_PASSWORD: mastodon
+      POSTGRES_DB: mastodon
+
+  mail:
+    image: 'namshi/smtp:latest'
+    env_file:
+      - openbracket.mail.env
+    ports:
+      - 25:25
