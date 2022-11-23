@@ -9,35 +9,10 @@ services:
       - "database"
       - "mail"
     env_file:
-      - openbracket.mastodon.env
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/Halifax
-
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-
-      - DB_HOST=database
-      - DB_USER=mastodon
-      - DB_NAME=mastodon
-      - DB_PASS=mastodon
-      - DB_PORT=5432
-
-      - ES_ENABLED=false
-
-      - VAPID_PRIVATE_KEY=
-      - VAPID_PUBLIC_KEY=
-
-      - SMTP_SERVER=mail
-      - SMTP_PORT=25
-      - SINGLE_USER_MODE=true
-      - DISABLE_IPV6=1
-
-      - S3_ENABLED=false
+      - ./env/mastodon.env
     volumes:
       - ./letsencrypt/:/etc/letsencrypt/
-      - ./default.conf:/config/nginx/site-confs/default.conf
+      - ./conf/mastodon.default.conf:/config/nginx/site-confs/default.conf
     ports:
       - 7080:80
       - 7443:443
@@ -61,7 +36,7 @@ services:
   mail:
     image: 'namshi/smtp:latest'
     env_file:
-      - openbracket.mail.env
+      - ./env/mail.env
     ports:
       - 25:25
 
@@ -70,22 +45,11 @@ services:
     container_name: swag
     cap_add:
       - NET_ADMIN
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/Halifax
-      - URL=openbracket.ca
-      - VALIDATION=http
-      - EMAIL=bardic.knowledge@gmail.com
-      - CERTPROVIDER=zerossl #optional
-      - DNSPLUGIN= #optional
-      - PROPAGATION= #optional
-      - ONLY_SUBDOMAINS=false #optional
-      - EXTRA_DOMAINS= #optional
-      - STAGING=false #optional
+    env_file:
+      - ./env/swag.env
     volumes:
       - ./letsencrypt/:/config/etc/letsencrypt/
-      - ./swag.default.conf:/config/nginx/site-confs/default.conf
+      - ./conf/swag.default.conf:/config/nginx/site-confs/default.conf
     ports:
       - 443:443
       - 80:80 #optional
