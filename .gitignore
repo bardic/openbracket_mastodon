@@ -1,2 +1,4 @@
 *.env
-certbot/
+letsencrypt/
+
+!*.env.sample

@@ -1,0 +1,28 @@
+---
+version: "3.1"
+services:
+  swag:
+    image: lscr.io/linuxserver/swag:latest
+    container_name: swag
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Halifax
+      - URL=openbracket.ca
+      - VALIDATION=http
+      - EMAIL=bardic.knowledge@gmail.com
+      - CERTPROVIDER=zerossl #optional
+      - DNSPLUGIN= #optional
+      - PROPAGATION= #optional
+      - ONLY_SUBDOMAINS=false #optional
+      - EXTRA_DOMAINS= #optional
+      - STAGING=false #optional
+    volumes:
+      - ./letsencrypt/:/config/etc/letsencrypt/
+      - ./swag.default.conf:/config/nginx/site-confs/default.conf
+    ports:
+      - 443:443
+      - 80:80 #optional
+    restart: unless-stopped

@@ -1,5 +1,5 @@
 ---
-version: "2.1"
+version: "3.1"
 services:
   mastodon:
     image: lscr.io/linuxserver/mastodon:latest
@@ -7,13 +7,13 @@ services:
     depends_on:
       - "redis"
       - "database"
-
+      - "mail"
     env_file:
       - openbracket.mastodon.env
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=America/New_York
+      - TZ=America/Halifax
 
       - REDIS_HOST=redis
       - REDIS_PORT=6379
@@ -31,18 +31,16 @@ services:
 
       - SMTP_SERVER=mail
       - SMTP_PORT=25
-
+      - SINGLE_USER_MODE=true
       - DISABLE_IPV6=1
 
       - S3_ENABLED=false
-
     volumes:
-      - /path/to/appdata/config:/config
-      - ./nginx.conf:/etc/nginx/sites-available/mastodon/nginx.conf
-      - ./nginx.conf:/etc/nginx/sites-enabled/mastodon/nginx.conf
+      - ./letsencrypt/:/etc/letsencrypt/
+      - ./default.conf:/config/nginx/site-confs/default.conf
     ports:
-      - 80:80
-      - 443:443
+      - 7080:80
+      - 7443:443
     restart: unless-stopped
   redis:
     image: "redis:latest"
@@ -66,10 +64,29 @@ services:
       - openbracket.mail.env
     ports:
       - 25:25
-  #certbot:
-  #  image: certbot/certbot
-  #  container_name: certbot
-  #  volumes:
-  #    - ./certbot/conf:/etc/letsencrypt
-  #    - ./certbot/www:/var/www/certbot
-  #  command: certonly --webroot -w /var/www/certbot --force-renewal --email bardic.knowledge@gmail.com -d openbracket.ca --agree-tos
+
+  swag:
+    image: lscr.io/linuxserver/swag:latest
+    container_name: swag
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Halifax
+      - URL=openbracket.ca
+      - VALIDATION=http
+      - EMAIL=bardic.knowledge@gmail.com
+      - CERTPROVIDER=zerossl #optional
+      - DNSPLUGIN= #optional
+      - PROPAGATION= #optional
+      - ONLY_SUBDOMAINS=false #optional
+      - EXTRA_DOMAINS= #optional
+      - STAGING=false #optional
+    volumes:
+      - ./letsencrypt/:/config/etc/letsencrypt/
+      - ./swag.default.conf:/config/nginx/site-confs/default.conf
+    ports:
+      - 443:443
+      - 80:80 #optional
+    restart: unless-stopped
