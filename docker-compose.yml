@@ -14,7 +14,7 @@ services:
       - ./letsencrypt/:/etc/letsencrypt/
       - ./conf/mastodon.default.conf:/config/nginx/site-confs/default.conf
     ports:
-      - 7080:80
+      - 80:80
       - 7443:443
     restart: unless-stopped
   redis:
@@ -52,5 +52,4 @@ services:
       - ./conf/swag.default.conf:/config/nginx/site-confs/default.conf
     ports:
       - 443:443
-      - 80:80 #optional
     restart: unless-stopped
