@@ -49,3 +49,4 @@ Remove .sample from the file names
 Once all files environment files and the mastondon.default.conf have been modified, simply run `docker-compose up`
 
 This will generate a letsencrypt folder. Do not delete this. This is your SSL certs and will be managed by and refreshed by `swag`
+

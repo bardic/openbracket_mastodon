@@ -17,6 +17,7 @@ services:
       - 80:80
       - 7443:443
     restart: unless-stopped
+    
   redis:
     image: "redis:latest"
     ports:
