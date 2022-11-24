@@ -1,5 +1,5 @@
 ---
-version: "2.1"
+version: "3.1"
 services:
   mastodon:
     image: lscr.io/linuxserver/mastodon:latest
@@ -7,41 +7,17 @@ services:
     depends_on:
       - "redis"
       - "database"
-
+      - "mail"
     env_file:
-      - openbracket.mastodon.env
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/New_York
-
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-
-      - DB_HOST=database
-      - DB_USER=mastodon
-      - DB_NAME=mastodon
-      - DB_PASS=mastodon
-      - DB_PORT=5432
-
-      - ES_ENABLED=false
-
-      - VAPID_PRIVATE_KEY=
-      - VAPID_PUBLIC_KEY=
-
-      - SMTP_SERVER=mail
-      - SMTP_PORT=25
-
-      - DISABLE_IPV6=1
-
-      - S3_ENABLED=false
-
+      - ./env/mastodon.env
     volumes:
-      - /path/to/appdata/config:/config
+      - ./letsencrypt/:/etc/letsencrypt/
+      - ./conf/mastodon.default.conf:/config/nginx/site-confs/default.conf
     ports:
       - 80:80
-      - 443:443
+      - 7443:443
     restart: unless-stopped
+    
   redis:
     image: "redis:latest"
     ports:
@@ -61,6 +37,20 @@ services:
   mail:
     image: 'namshi/smtp:latest'
     env_file:
-      - openbracket.mail.env
+      - ./env/mail.env
     ports:
       - 25:25
+
+  swag:
+    image: lscr.io/linuxserver/swag:latest
+    container_name: swag
+    cap_add:
+      - NET_ADMIN
+    env_file:
+      - ./env/swag.env
+    volumes:
+      - ./letsencrypt/:/config/etc/letsencrypt/
+      - ./conf/swag.default.conf:/config/nginx/site-confs/default.conf
+    ports:
+      - 443:443
+    restart: unless-stopped

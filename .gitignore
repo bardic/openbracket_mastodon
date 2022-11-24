@@ -1,1 +1,4 @@
 *.env
+letsencrypt/
+
+!*.env.sample
