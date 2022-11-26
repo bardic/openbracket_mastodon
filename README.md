@@ -3,6 +3,10 @@
 ## Requirements / Recommendations
 - [Docker](https://en.wikipedia.org/wiki/Docker_(software)) via [Rancher Desktop](https://rancherdesktop.io)
 
+## Glitch Image
+
+The image used Mastodon is based on [Glitch](https://glitch-soc.github.io/docs/) and [LinxusServer.io](https://github.com/linuxserver/docker-mastodon) and can be found [here](https://hub.docker.com/repository/docker/judohippo/mastodon-glitch) 
+
 ## Customizations 
 
 

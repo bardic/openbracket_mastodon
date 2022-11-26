@@ -1,13 +1,15 @@
 ---
 version: "3.1"
 services:
-  mastodon:
-    image: lscr.io/linuxserver/mastodon:latest
-    container_name: mastodon
+
+  mastodon-glitch:
+    image: judohippo/mastodon-glitch:0.0.2
+    container_name: mastodon-glitch
     depends_on:
-      - "redis"
+      - "redis-glitch"
       - "database"
       - "mail"
+      - "swag"
     env_file:
       - ./env/mastodon.env
     volumes:
@@ -17,8 +19,8 @@ services:
       - 80:80
       - 7443:443
     restart: unless-stopped
-    
-  redis:
+
+  redis-glitch:
     image: "redis:latest"
     ports:
       - 6379:6379
@@ -53,4 +55,5 @@ services:
       - ./conf/swag.default.conf:/config/nginx/site-confs/default.conf
     ports:
       - 443:443
+      #- 80:80
     restart: unless-stopped
