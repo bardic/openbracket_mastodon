@@ -1,4 +1,4 @@
-# Openbracket Mastodon
+# Openbracket Mastodon Glitch
 
 A Docker based self-hosted mastodon solution
 
@@ -56,7 +56,7 @@ Account that is complete we will add a new Proxy host. Here are the details you 
 
 - Domain : your URL
 - Scheme : `https`
-- Forward Hostname/IP: `mastodon`
+- Forward Hostname/IP: `mastodon-glitch`
 - Port: `443`
 
 Under SSL select request and enable HTTP/2 Support .
