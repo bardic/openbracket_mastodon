@@ -14,10 +14,10 @@ services:
       - ./letsencrypt/:/etc/letsencrypt/
       - ./conf/mastodon.default.conf:/config/nginx/site-confs/default.conf
     ports:
-      - 80:80
+      - 7080:80
       - 7443:443
     restart: unless-stopped
-    
+
   redis:
     image: "redis:latest"
     ports:
@@ -41,16 +41,15 @@ services:
     ports:
       - 25:25
 
-  swag:
-    image: lscr.io/linuxserver/swag:latest
-    container_name: swag
-    cap_add:
-      - NET_ADMIN
-    env_file:
-      - ./env/swag.env
-    volumes:
-      - ./letsencrypt/:/config/etc/letsencrypt/
-      - ./conf/swag.default.conf:/config/nginx/site-confs/default.conf
-    ports:
-      - 443:443
+  npm:
+    image: 'jc21/nginx-proxy-manager:latest'
     restart: unless-stopped
+    ports:
+      - '80:80' # Public HTTP Port
+      - '443:443' # Public HTTPS Port
+      - '81:81' # Admin Web Port
+    environment:
+      DISABLE_IPV6: 'true'
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
